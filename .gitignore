@@ -1,0 +1,71 @@
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# dotenv environment variables
+.env
+
+# Vite
+dist/
+.vite/
+
+# Logs
+logs
+*.log
+log/
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Docker
+**/docker-compose.override.yml
+**/docker-compose.local.yml
+**/Dockerfile.local
+*.container
+
+# Build artifacts
+build/
+temp/
+tmp/
+out/
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# MongoDB dump files
+dump/
+*.archive
+
+# Kafka logs (if stored locally)
+kafka-logs/
+zookeeper-logs/
+
+# Misc
+*.tgz
+*.gz
+*.zip
+*.bak
+*.tar
+
+# Optional: Ignore live deployment configs (if present)
+vercel/
+fly.toml
+render.yaml
+railway.json
+
+
+
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
