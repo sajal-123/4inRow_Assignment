@@ -23,15 +23,13 @@ app.use(express.json());
 
 
 
-const db: any = "";
 const analytics = new Analytics();
-const gameManager = new GameManager(io, db, analytics);
+const gameManager = new GameManager(io, analytics);
 
 // REST API
 app.get('/api/leaderboard', async (_req, res) => {
   try {
-    const leaderboard = await db.getLeaderboard();
-    res.json(leaderboard);
+            // Take en event to trigger to kafka producer
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch leaderboard' });
   }

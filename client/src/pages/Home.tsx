@@ -1,17 +1,29 @@
 import React, { useEffect } from 'react';
 import GameLobby from '../components/GameLobby';
-import { useSocket } from '../hooks/useSocket';
 import { useNavigate } from 'react-router-dom';
 
-function HomePage() {
-  const { joinGame, isWaiting, isConnected, error,gameState } = useSocket();
-  const navigate=useNavigate();
-    // Check if the user is already in a game
-    useEffect(() => {
-        if(gameState){
-            navigate("/game/"+gameState.gameId);
-        }
-    }, [gameState, navigate]);
+interface HomePageProps {
+  joinGame: (userInput:string) => void
+  isWaiting: boolean
+  isConnected: boolean
+  error: string | null,
+  gameState: any
+}
+
+const HomePage: React.FC<HomePageProps> = ({
+  joinGame,
+  isWaiting,
+  isConnected,
+  error,
+  gameState
+}) => {
+  const navigate = useNavigate();
+  // Check if the user is already in a game
+  useEffect(() => {
+    if (gameState) {
+      navigate("/game/" + gameState.gameId);
+    }
+  }, [gameState, navigate]);
 
 
   return (

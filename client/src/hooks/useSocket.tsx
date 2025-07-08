@@ -61,7 +61,6 @@ export const useSocket = () => {
       setGameState(data.gameState);
       setGameEnded(true);
       
-      // Clear stored game info
       localStorage.removeItem('connect4_gameId');
     });
 

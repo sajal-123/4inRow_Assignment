@@ -8,16 +8,14 @@ import { HandleAnalyticsEvents } from './KafkaEventsTrigger';
 
 export class GameManager {
   private io: Server;
-  private db: any;
   private analytics: any;
   private games: Map<string, GameData> = new Map();
   private waitingPlayers: Map<string, Player> = new Map();
   private playerSockets: Map<string, { username: string; socket: Socket }> = new Map();
   private reconnectTimers: Map<string, NodeJS.Timeout> = new Map();
 
-  constructor(io: Server, db: any, analytics: any) {
+  constructor(io: Server, analytics: any) {
     this.io = io;
-    this.db = db;
     this.analytics = analytics;
   }
 
@@ -84,6 +82,7 @@ export class GameManager {
     // Notify both players
     const player1Socket = this.playerSockets.get(player1.socketId!)?.socket;
     const player2Socket = this.playerSockets.get(player2.socketId!)?.socket;
+    console.log(`Notifying players: ${player1.username} and ${player2.username}-------------------------------------------------`);
 
     if (player1Socket) {
       player1Socket.join(gameId);
@@ -148,12 +147,12 @@ export class GameManager {
       moveCount: 0
     });
 
-    this.analytics.trackEvent('game_started', {
-      gameId,
-      player1: username,
-      player2: 'Bot',
-      gameType: 'pvb'
-    });
+    // this.analytics.trackEvent('game_started', {
+    //   gameId,
+    //   player1: username,
+    //   player2: 'Bot',
+    //   gameType: 'pvb'
+    // });
   }
 
   async handleMove(socket: Socket, data: { gameId: string; column: number }) {
@@ -267,29 +266,6 @@ export class GameManager {
 
     console.log(`Game ${gameId} ended. Winner: ${winner || 'Draw'}`);
 
-    // Save game to database
-    try {
-      await this.db.saveGame({
-        gameId,
-        player1: player1.username,
-        player2: player2.username,
-        winner,
-        moves: game.moves,
-        duration: Date.now() - game.startTime
-      });
-
-      // Update leaderboard
-      if (winner && winner !== 'Draw') {
-        await this.db.updatePlayerStats(winner, 'win');
-        const loser = winner === player1.username ? player2.username : player1.username;
-        if (loser !== 'Bot') {
-          await this.db.updatePlayerStats(loser, 'loss');
-        }
-      }
-    } catch (error) {
-      console.error('Error saving game:', error);
-    }
-
     // Notify players
     this.io.to(gameId).emit('game-ended', {
       winner,
@@ -322,7 +298,7 @@ export class GameManager {
     const { gameId, username } = data;
     const gameData = this.games.get(gameId);
 
-    console.log(`${username} attempting to rejoin game ${gameId}`);
+    // console.log(`${username} attempting to rejoin game ${gameId}`);
 
     if (!gameData) {
       socket.emit('error', 'Game not found');

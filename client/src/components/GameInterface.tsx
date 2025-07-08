@@ -3,7 +3,7 @@ import GameBoard from './GameBoard';
 import Leaderboard from './Leaderboard';
 import { Trophy, Users, Clock, RotateCcw, Wifi, WifiOff } from 'lucide-react';
 import type { GameInterfaceProps } from '../types';
-
+import { useNavigate } from 'react-router-dom';
 
 const GameInterface: React.FC<GameInterfaceProps> = ({
   gameState,
@@ -16,11 +16,13 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
 }) => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
+  const navigate = useNavigate();
 
   const isMyTurn = gameState.currentPlayer === username;
 
   useEffect(() => {
     setGameEnded(!!gameState.winner || gameState.isDraw);
+
   }, [gameState.winner, gameState.isDraw]);
 
   const getGameResult = () => {
@@ -55,9 +57,8 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
 
             <div className="flex flex-wrap gap-3 items-center justify-center">
               <div
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${
-                  isConnected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                }`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${isConnected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                  }`}
               >
                 {isConnected ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
                 {isConnected ? 'Connected' : 'Disconnected'}
@@ -73,7 +74,11 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
 
               {gameEnded && (
                 <button
-                  onClick={onNewGame}
+                  onClick={() => {
+                    localStorage.removeItem('connect4_gameId');
+                    localStorage.removeItem('connect4_username');
+                    navigate('/');
+                  }}
                   className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all shadow-md"
                 >
                   <RotateCcw className="w-5 h-5" />

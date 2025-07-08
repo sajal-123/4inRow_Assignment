@@ -1,20 +1,30 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import GameInterface from '../components/GameInterface';
-import { useSocket } from '../hooks/useSocket';
 
-function GamePage() {
-  const {
-    gameState,
-    playerColor,
-    opponent,
-    makeMove,
-    startNewGame,
-    isConnected,
-    username,
-    error,
-    rejoinGame,
-  } = useSocket();
+interface GamePageProps {
+  gameState: any;
+  playerColor: string;
+  opponent: string;
+  makeMove: (column: number) => void;
+  startNewGame: () => void;
+  isConnected: boolean;
+  username: string;
+  error: string | null;
+  rejoinGame: () => void;
+}
+
+const GamePage: React.FC<GamePageProps> = ({
+  gameState,
+  playerColor,
+  opponent,
+  makeMove,
+  startNewGame,
+  isConnected,
+  username,
+  error,
+  rejoinGame,
+}) => {
 
   const { gameId } = useParams();
   const navigate = useNavigate();
@@ -22,19 +32,33 @@ function GamePage() {
   useEffect(() => {
     const storedGameId = localStorage.getItem('connect4_gameId');
     const storedUsername = localStorage.getItem('connect4_username');
+    if(!storedUsername) {
+      // If no username is stored, redirect to home
+      navigate('/');
+      return;
+    }
 
     if (storedGameId && storedUsername) {
       setTimeout(() => {
         rejoinGame();
       }, 1000);
-    } else {
-      navigate('/');
     }
   }, [rejoinGame, navigate]);
 
   if (!gameState) {
-    return <p className="text-center mt-10">Loading game...</p>;
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+        <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+          Setting up your game...
+        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          Please wait while we load the game board.
+        </p>
+      </div>
+    );
   }
+
 
   return (
     <div className="relative">
