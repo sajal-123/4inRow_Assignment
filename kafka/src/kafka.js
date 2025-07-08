@@ -10,6 +10,7 @@ const admin = kafka.admin();
 
 const run = async () => {
   await admin.connect();
+  console.log("Admin Connected to Kafka broker:", EnvVariables.Kafka_Broker,"-----------");
   await admin.createTopics({
     topics: [
       { topic: EnvVariables.Kafka_Topic, numPartitions: 1 },

@@ -15,6 +15,7 @@ connectToDatabase();
 const run = async () => {
   try {
     await consumer.connect();
+    console.log('Consumer Connected to Kafka broker:', EnvVariables.Kafka_Broker ,"-----------");
     await consumer.subscribe({ topic: EnvVariables.Kafka_Topic, fromBeginning: true });
 
     await consumer.run({
